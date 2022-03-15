@@ -46,7 +46,7 @@ public class ClienteService {
 		Optional<Cliente> clienteOptional = clienteRepository.findById(id);
 		
 		if(!clienteOptional.isPresent()) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).body("Cliente não encontrado");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente não encontrado");
 		}
 		if (emailCadastrado(cliente.getEmail())) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body("Email já esta em uso, utilize outro.");
@@ -57,6 +57,15 @@ public class ClienteService {
 		return ResponseEntity.status(HttpStatus.CREATED).body(clienteRepository.save(cliente));
 	}
 
+	public ResponseEntity<Object> deletarCliente(Long id) {
+		Optional<Cliente> clienteOptional =  clienteRepository.findById(id);
+		
+		if(!clienteOptional.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente não encontrado");
+		}
+		clienteRepository.deleteById(clienteOptional.get().getId());
+		return ResponseEntity.status(HttpStatus.OK).body("Cliente deletado com sucesso");
+	}
 	public boolean emailCadastrado(String email) {
 		return clienteRepository.existsByEmailIgnoreCase(email);
 	}
