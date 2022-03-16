@@ -36,7 +36,7 @@ public class ClienteService {
 
 		Optional<Cliente> clienteOptional = clienteRepository.findById(id);
 		if (!clienteOptional.isPresent()) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).body("Cliente não encontrado");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente não encontrado");
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(clienteRepository.findById(id));
 	}
