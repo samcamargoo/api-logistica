@@ -23,13 +23,13 @@ import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/clientes")
+@RequestMapping("/api/v1/clientes")
 public class ClienteController {
 
 	private ClienteService clienteService;
 
 	@GetMapping
-	public List<Cliente> listarTodos() {
+	public List<ClienteDto> listarTodos() {
 		return clienteService.listarTodos();
 
 	}
@@ -39,21 +39,21 @@ public class ClienteController {
 		return clienteService.encontrarPorId(id);
 	}
 	
-	@PostMapping("/cadastrar-cliente")
+	@PostMapping
 	public ResponseEntity<Object> salvarCliente(@RequestBody @Valid ClienteDto clienteDto){
 		var cliente = new Cliente();
 		BeanUtils.copyProperties(clienteDto, cliente);
 		return clienteService.salvarCliente(cliente);
 	}
 	
-	@PutMapping("/atualizar-cliente/{id}")
+	@PutMapping("{id}")
 	public ResponseEntity<Object> atualizarCliente(@PathVariable(value = "id") Long id, @RequestBody @Valid ClienteDto clienteDto) {
 		var cliente = new Cliente();
 		BeanUtils.copyProperties(clienteDto, cliente);
 		return clienteService.atualizarCliente(cliente, id);
 	}
 	
-	@DeleteMapping("/deletar-cliente/{id}")
+	@DeleteMapping("{id}")
 	public ResponseEntity<Object> deletarCliente(@PathVariable (value = "id" )Long id) {
 		return clienteService.deletarCliente(id);
 	}

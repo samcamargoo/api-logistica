@@ -23,13 +23,13 @@ import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/entregadores")
+@RequestMapping("/api/v1/entregadores")
 public class EntregadorController {
 
 	private EntregadorService entregadorService;
 
 	@GetMapping
-	public List<Entregador> listarTodos() {
+	public List<EntregadorDto> listarTodos() {
 		return entregadorService.listarTodos();
 
 	}
@@ -39,14 +39,14 @@ public class EntregadorController {
 		return entregadorService.encontrarPorId(id);
 	}
 
-	@PostMapping("/cadastrar-entregador")
+	@PostMapping
 	public ResponseEntity<Object> salvarEntregador(@RequestBody @Valid EntregadorDto entregadorDto) {
 		var entregador = new Entregador();
 		BeanUtils.copyProperties(entregadorDto, entregador);
 		return entregadorService.salvarEntregador(entregador);
 	}
 
-	@PutMapping("/atualizar-entregador/{id}")
+	@PutMapping("{id}")
 	public ResponseEntity<Object> atualizarEntregador(@PathVariable(value = "id") Long id,
 			@RequestBody @Valid EntregadorDto entregadorDto) {
 		var entregador = new Entregador();
@@ -54,7 +54,7 @@ public class EntregadorController {
 		return entregadorService.atualizarEntregador(entregador, id);
 	}
 
-	@DeleteMapping("/deletar-entregador/{id}")
+	@DeleteMapping("{id}")
 	public ResponseEntity<Object> deletarEntregador(@PathVariable(value = "id") Long id) {
 		return entregadorService.deletarEntregador(id);
 	}

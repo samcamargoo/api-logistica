@@ -3,11 +3,13 @@ package com.sam.api.services;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.sam.api.dtos.EntregadorDto;
 import com.sam.api.entities.Entregador;
 import com.sam.api.repositories.EntregadorRepository;
 
@@ -18,9 +20,11 @@ import lombok.AllArgsConstructor;
 public class EntregadorService {
 
 	private EntregadorRepository entregadorRepository;
-
-	public List<Entregador> listarTodos() {
-		return entregadorRepository.findAll();
+	
+	public List<EntregadorDto> listarTodos() {
+		
+		List<Entregador> resultado = entregadorRepository.findAll();
+		return resultado.stream().map(x -> new EntregadorDto(x)).collect(Collectors.toList());
 	}
 
 	public ResponseEntity<Object> salvarEntregador(Entregador entregador) {

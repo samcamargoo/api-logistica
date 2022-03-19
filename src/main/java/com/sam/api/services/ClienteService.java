@@ -3,11 +3,13 @@ package com.sam.api.services;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.sam.api.dtos.ClienteDto;
 import com.sam.api.entities.Cliente;
 import com.sam.api.repositories.ClienteRepository;
 
@@ -19,8 +21,9 @@ public class ClienteService {
 
 	private ClienteRepository clienteRepository;
 
-	public List<Cliente> listarTodos() {
-		return clienteRepository.findAll();
+	public List<ClienteDto> listarTodos() {
+		List<Cliente> resultado = clienteRepository.findAll();
+		return resultado.stream().map(x -> new ClienteDto(x)).collect(Collectors.toList());
 	}
 
 	public ResponseEntity<Object> salvarCliente(Cliente cliente) {

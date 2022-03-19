@@ -1,5 +1,6 @@
 package com.sam.api.entities;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.persistence.Embedded;
@@ -9,6 +10,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -23,7 +25,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "TB_ENTREGAS")
-public class Entrega {
+public class Entrega implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +38,7 @@ public class Entrega {
 
 	@ManyToOne
 	private Cliente cliente;
-
+	
 	@Embedded
 	private Destinatario destinatario;
 
@@ -40,8 +47,9 @@ public class Entrega {
 
 	private LocalDateTime horaCriada;
 	private LocalDateTime horaFinalizada;
-
+	
 	@ManyToOne
+	@JoinColumn(name = "entregador_id")
 	private Entregador entregador;
 
 }
