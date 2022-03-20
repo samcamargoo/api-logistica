@@ -14,12 +14,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.sam.api.enums.EntregaEnum;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.sam.api.enums.StatusEntrega;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@JsonInclude(Include.NON_NULL)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -43,7 +46,7 @@ public class Entrega implements Serializable {
 	private Destinatario destinatario;
 
 	@Enumerated(EnumType.STRING)
-	private EntregaEnum status;
+	private StatusEntrega status;
 
 	private LocalDateTime horaCriada;
 	private LocalDateTime horaFinalizada;
@@ -52,4 +55,12 @@ public class Entrega implements Serializable {
 	@JoinColumn(name = "entregador_id")
 	private Entregador entregador;
 
+	
+	public boolean podeSerFinalizada() {
+		return StatusEntrega.PENDENTE.equals(getStatus());
+	}
+	
+	public boolean naoPodeSerFinalizada() {
+		return !podeSerFinalizada();
+	}
 }

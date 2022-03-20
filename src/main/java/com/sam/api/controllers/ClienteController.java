@@ -33,28 +33,29 @@ public class ClienteController {
 		return clienteService.listarTodos();
 
 	}
-	
+
 	@GetMapping("/{id}")
-	public ResponseEntity<Object> encontrarPorId(@PathVariable(value = "id") Long id){
+	public ResponseEntity<Object> encontrarPorId(@PathVariable(value = "id") Long id) {
 		return clienteService.encontrarPorId(id);
 	}
-	
+
 	@PostMapping
-	public ResponseEntity<Object> salvarCliente(@RequestBody @Valid ClienteDto clienteDto){
+	public ResponseEntity<Object> salvarCliente(@RequestBody @Valid ClienteDto clienteDto) {
 		var cliente = new Cliente();
 		BeanUtils.copyProperties(clienteDto, cliente);
 		return clienteService.salvarCliente(cliente);
 	}
-	
+
 	@PutMapping("{id}")
-	public ResponseEntity<Object> atualizarCliente(@PathVariable(value = "id") Long id, @RequestBody @Valid ClienteDto clienteDto) {
+	public ResponseEntity<Object> atualizarCliente(@PathVariable(value = "id") Long id,
+			@RequestBody @Valid ClienteDto clienteDto) {
 		var cliente = new Cliente();
 		BeanUtils.copyProperties(clienteDto, cliente);
 		return clienteService.atualizarCliente(cliente, id);
 	}
-	
+
 	@DeleteMapping("{id}")
-	public ResponseEntity<Object> deletarCliente(@PathVariable (value = "id" )Long id) {
+	public ResponseEntity<Object> deletarCliente(@PathVariable(value = "id") Long id) {
 		return clienteService.deletarCliente(id);
 	}
 }

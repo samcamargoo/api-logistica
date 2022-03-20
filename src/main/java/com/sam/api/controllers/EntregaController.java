@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,13 +34,17 @@ public class EntregaController {
 
 	@PostMapping
 	public ResponseEntity<Object> criarEntrega(@RequestBody @Valid Entrega entrega) {
-		
-		
+
 		return entregaService.criarEntrega(entrega);
 	}
-	
+
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Object> deletarEntrega(@PathVariable (value = "id") Long id) {
+	public ResponseEntity<Object> deletarEntrega(@PathVariable(value = "id") Long id) {
 		return entregaService.deletarEntrega(id);
+	}
+
+	@PutMapping("/finalizar-entrega/{id}")
+	public ResponseEntity<Object> finalizarEntrega(@PathVariable(value = "id") Long id) {
+		return entregaService.finalizar(id);
 	}
 }

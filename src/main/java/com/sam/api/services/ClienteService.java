@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -44,6 +46,7 @@ public class ClienteService {
 		return ResponseEntity.status(HttpStatus.OK).body(clienteRepository.findById(id));
 	}
 	
+	@Transactional
 	public ResponseEntity<Object> atualizarCliente(Cliente cliente, Long id) {
 		
 		Optional<Cliente> clienteOptional = clienteRepository.findById(id);
@@ -60,6 +63,7 @@ public class ClienteService {
 		return ResponseEntity.status(HttpStatus.CREATED).body(clienteRepository.save(cliente));
 	}
 
+	@Transactional
 	public ResponseEntity<Object> deletarCliente(Long id) {
 		Optional<Cliente> clienteOptional =  clienteRepository.findById(id);
 		

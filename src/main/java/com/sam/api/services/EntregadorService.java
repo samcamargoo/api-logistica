@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,7 @@ public class EntregadorService {
 		return resultado.stream().map(x -> new EntregadorDto(x)).collect(Collectors.toList());
 	}
 
+	@Transactional
 	public ResponseEntity<Object> salvarEntregador(Entregador entregador) {
 
 		if (cpfCadastrado(entregador.getCpf())) {
@@ -45,6 +48,7 @@ public class EntregadorService {
 		return ResponseEntity.status(HttpStatus.OK).body(entregadorRepository.findById(id));
 	}
 
+	@Transactional
 	public ResponseEntity<Object> atualizarEntregador(Entregador entregador, Long id) {
 
 		Optional<Entregador> entregadorOptional = entregadorRepository.findById(id);
@@ -69,6 +73,7 @@ public class EntregadorService {
 		return ResponseEntity.status(HttpStatus.CREATED).body(entregadorRepository.save(entregador));
 	}
 
+	@Transactional
 	public ResponseEntity<Object> deletarEntregador(Long id) {
 		Optional<Entregador> entregadorOptional = entregadorRepository.findById(id);
 

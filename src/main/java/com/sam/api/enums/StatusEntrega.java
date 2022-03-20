@@ -1,7 +1,8 @@
 package com.sam.api.enums;
 
-public enum EntregaEnum {
+public enum StatusEntrega {
 	
 		PENDENTE,
+		CANCELADA,
 		FINALIZADA
 }
