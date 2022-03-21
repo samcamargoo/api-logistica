@@ -1,6 +1,7 @@
 package com.sam.api.services;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,7 +34,20 @@ public class EntregaService {
 	public ResponseEntity<Object> criarEntrega(Entrega entrega) {
 		/*
 		 * TODO realizar as verificaçoes para se criar uma entrega
+		 * 
+		 * Hora,
+		 * Entregadores Disponiveis,
+		 * 
+		 * 
 		 */
+	      String horaLimiteString = "16:00:00";
+		  LocalTime horaLimite = LocalTime.parse(horaLimiteString);
+		  LocalTime localTime = LocalTime.now();
+		 
+		
+		if(localTime.isAfter(horaLimite)) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Entregas só podem ser criadas até 16:00");
+		}
 
 		entrega.setStatus(StatusEntrega.PENDENTE);
 		entrega.setHoraCriada(LocalDateTime.now());
