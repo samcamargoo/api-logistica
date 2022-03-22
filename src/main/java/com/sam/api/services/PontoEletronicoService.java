@@ -26,21 +26,18 @@ public class PontoEletronicoService {
 
 	}
 	
-	public List<PontoEletronico> entregadoresDisponiveis() {
-	List<PontoEletronico> entregadoresDisponiveis = pontoEletronicoRepository.findAll();
-		return entregadoresDisponiveis.stream()
-				.filter(x -> x.isDisponivel())
-				.collect(Collectors.toList());
-	}
-	
-	public ResponseEntity<Object> baterPonto(String cpf) {
+	public ResponseEntity<Object> baterPontoEntrada(String cpf) {
 		var pontoEletronicoEntregador = new PontoEletronico();
 		Entregador entregador = entregadorRepository.findByCpf(cpf);
 		
 		if(!entregadorRepository.existsByCpf(cpf) ) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cpf não encontrado em nossa base de dados");
 		}
-		
+		/*TODO
+		 * Verificar se o entregador já bateu ponto no mesmo dia em horario anterior,
+		 * Adicionar hora de entrada
+		 * 
+		 * */
 		
 		pontoEletronicoEntregador.setNome(entregador.getNome());
 		pontoEletronicoEntregador.setId(entregador.getId());
@@ -48,5 +45,16 @@ public class PontoEletronicoService {
 		pontoEletronicoEntregador.setDisponivel(true);
 		pontoEletronicoRepository.save(pontoEletronicoEntregador);
 		return ResponseEntity.status(HttpStatus.CREATED).body(entregador.getNome() + " bateu ponto");
+	}
+	
+	public ResponseEntity<Object> baterPontoSaida(String cpf) {
+		return null;
+		
+		/*TODO
+		 * Verificar a hora de saída (estipular um horario de saída),
+		 * Verificar se o entregador bateu ponto para entrar antes de sair,
+		 * Verificar se o entregador bateu ponto para sair no mesmo dia em horario anterior,
+		 * Pensar em mais verificações
+		 * */
 	}
 }
