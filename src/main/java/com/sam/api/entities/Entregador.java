@@ -61,4 +61,6 @@ public class Entregador {
 	
 	@OneToMany(mappedBy = "entregador")
 	private List<Entrega> entrega = new ArrayList<>();
+	
+	
 }

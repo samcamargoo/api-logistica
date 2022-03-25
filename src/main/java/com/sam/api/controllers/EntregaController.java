@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,5 +47,13 @@ public class EntregaController {
 	@PutMapping("/finalizar-entrega/{id}")
 	public ResponseEntity<Object> finalizarEntrega(@PathVariable(value = "id") Long id) {
 		return entregaService.finalizar(id);
+	}
+	
+	@PutMapping("/cancelar-entrega/{id}")
+	public ResponseEntity<Object> cancelarEntrega(@PathVariable(value = "id") Long id, @RequestBody EntregaDto entregaDto) {
+		var entrega = new Entrega();
+		BeanUtils.copyProperties(entregaDto, entrega);
+		return entregaService.cancelarEntrega(id, entrega);
+		
 	}
 }
