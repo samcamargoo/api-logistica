@@ -7,10 +7,12 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.sam.api.controllers.ClienteController;
 import com.sam.api.dtos.ClienteDto;
 import com.sam.api.entities.Cliente;
 import com.sam.api.repositories.ClienteRepository;
@@ -25,7 +27,13 @@ public class ClienteService {
 
 	public List<ClienteDto> listarTodos() {
 		List<Cliente> resultado = clienteRepository.findAll();
-		return resultado.stream().map(x -> new ClienteDto(x)).collect(Collectors.toList());
+		
+		return resultado.stream().map(x -> new ClienteDto(x).add(
+				WebMvcLinkBuilder
+				.linkTo(ClienteController.class)
+				.slash(x.getId())
+				.withSelfRel()))
+				.collect(Collectors.toList());
 	}
 
 	public ResponseEntity<Object> salvarCliente(Cliente cliente) {
