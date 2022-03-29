@@ -1,5 +1,7 @@
 package com.sam.api.services;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -46,12 +48,20 @@ public class ClienteService {
 	}
 
 	public ResponseEntity<Object> encontrarPorId(Long id) {
-
+		
+		
+		
 		Optional<Cliente> clienteOptional = clienteRepository.findById(id);
 		if (!clienteOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente não encontrado");
 		}
-		return ResponseEntity.status(HttpStatus.OK).body(clienteRepository.findById(id));
+		clienteOptional.get().add(WebMvcLinkBuilder
+				.linkTo((methodOn(ClienteController.class)
+				.listarTodos()))
+				.withRel("Lista de Clientes"));
+		
+		
+		return ResponseEntity.status(HttpStatus.OK).body(clienteOptional.get());
 	}
 	
 	@Transactional
