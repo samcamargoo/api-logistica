@@ -29,8 +29,9 @@ public class ClienteService {
 
 	public List<ClienteDto> listarTodos() {
 		List<Cliente> resultado = clienteRepository.findAll();
-		
-		return resultado.stream().map(x -> new ClienteDto(x).add(
+
+		return resultado.stream()
+				.map(x -> new ClienteDto(x).add(
 				WebMvcLinkBuilder
 				.linkTo(ClienteController.class)
 				.slash(x.getId())
@@ -48,28 +49,26 @@ public class ClienteService {
 	}
 
 	public ResponseEntity<Object> encontrarPorId(Long id) {
-		
-		
-		
+
 		Optional<Cliente> clienteOptional = clienteRepository.findById(id);
 		if (!clienteOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente não encontrado");
 		}
-		clienteOptional.get().add(WebMvcLinkBuilder
-				.linkTo((methodOn(ClienteController.class)
-				.listarTodos()))
-				.withRel("Lista de Clientes"));
-		
-		
+		clienteOptional.get().add(
+				 WebMvcLinkBuilder
+				 .linkTo((methodOn(ClienteController.class)
+				 .listarTodos()))
+				 .withRel("Lista de Clientes"));
+
 		return ResponseEntity.status(HttpStatus.OK).body(clienteOptional.get());
 	}
-	
+
 	@Transactional
 	public ResponseEntity<Object> atualizarCliente(Cliente cliente, Long id) {
-		
+
 		Optional<Cliente> clienteOptional = clienteRepository.findById(id);
-		
-		if(!clienteOptional.isPresent()) {
+
+		if (!clienteOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente não encontrado");
 		}
 		if (emailCadastrado(cliente.getEmail())) {
@@ -77,20 +76,21 @@ public class ClienteService {
 		}
 		cliente.setId(clienteOptional.get().getId());
 		cliente.setHoraRegistro(clienteOptional.get().getHoraRegistro());
-		
+
 		return ResponseEntity.status(HttpStatus.CREATED).body(clienteRepository.save(cliente));
 	}
 
 	@Transactional
 	public ResponseEntity<Object> deletarCliente(Long id) {
-		Optional<Cliente> clienteOptional =  clienteRepository.findById(id);
-		
-		if(!clienteOptional.isPresent()) {
+		Optional<Cliente> clienteOptional = clienteRepository.findById(id);
+
+		if (!clienteOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente não encontrado");
 		}
 		clienteRepository.deleteById(clienteOptional.get().getId());
 		return ResponseEntity.status(HttpStatus.OK).body("Cliente deletado com sucesso");
 	}
+
 	public boolean emailCadastrado(String email) {
 		return clienteRepository.existsByEmailIgnoreCase(email);
 	}

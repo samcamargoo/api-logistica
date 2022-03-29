@@ -2,12 +2,14 @@ package com.sam.api.dtos;
 
 import javax.validation.constraints.NotBlank;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import com.sam.api.entities.Entregador;
 
 import lombok.Data;
 
 @Data
-public class EntregadorDto {
+public class EntregadorDto extends RepresentationModel<EntregadorDto> {
 
 	@NotBlank
 	private String nome;

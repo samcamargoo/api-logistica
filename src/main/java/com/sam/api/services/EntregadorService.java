@@ -1,5 +1,7 @@
 package com.sam.api.services;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -7,10 +9,12 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.sam.api.controllers.EntregadorController;
 import com.sam.api.dtos.EntregadorDto;
 import com.sam.api.entities.Entregador;
 import com.sam.api.repositories.EntregadorRepository;
@@ -26,7 +30,12 @@ public class EntregadorService {
 	public List<EntregadorDto> listarTodos() {
 		
 		List<Entregador> resultado = entregadorRepository.findAll();
-		return resultado.stream().map(x -> new EntregadorDto(x)).collect(Collectors.toList());
+		return resultado.stream().map(x -> new EntregadorDto(x).add(
+				WebMvcLinkBuilder
+				.linkTo(EntregadorController.class)
+				.slash(x.getId())
+				.withSelfRel()))
+				.collect(Collectors.toList());
 	}
 
 	@Transactional
@@ -45,7 +54,14 @@ public class EntregadorService {
 		if (!entregadorOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente não encontrado");
 		}
-		return ResponseEntity.status(HttpStatus.OK).body(entregadorRepository.findById(id));
+				List<EntregadorDto> lista = entregadorOptional.stream().map(x -> new EntregadorDto(x).add(
+				WebMvcLinkBuilder
+				.linkTo(methodOn(EntregadorController.class)
+				.listarTodos())
+				.withRel("Lista de Entregadores")))
+				.collect(Collectors.toList());
+		
+		return ResponseEntity.status(HttpStatus.OK).body(lista);
 	}
 
 	@Transactional
