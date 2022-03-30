@@ -32,6 +32,11 @@ public class EntregaController {
 	public List<EntregaDto> listarTodasEntregas() {
 		return entregaService.listarTodasEntregas();
 	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<Object> encontrarPorId(@PathVariable (value= "id") Long id) {
+		return entregaService.encontrarPorId(id);
+	}
 
 	@PostMapping
 	public ResponseEntity<Object> criarEntrega(@RequestBody @Valid Entrega entrega) {
@@ -50,10 +55,9 @@ public class EntregaController {
 	}
 	
 	@PutMapping("/cancelar-entrega/{id}")
-	public ResponseEntity<Object> cancelarEntrega(@PathVariable(value = "id") Long id, @RequestBody EntregaDto entregaDto) {
-		var entrega = new Entrega();
-		BeanUtils.copyProperties(entregaDto, entrega);
-		return entregaService.cancelarEntrega(id, entrega);
+	public ResponseEntity<Object> cancelarEntrega(@PathVariable(value = "id") Long id) {
+		
+		return entregaService.cancelarEntrega(id);
 		
 	}
 }

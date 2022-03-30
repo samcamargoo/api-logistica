@@ -54,14 +54,14 @@ public class EntregadorService {
 		if (!entregadorOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente não encontrado");
 		}
-				List<EntregadorDto> lista = entregadorOptional.stream().map(x -> new EntregadorDto(x).add(
+				List<EntregadorDto> entregador = entregadorOptional.stream().map(x -> new EntregadorDto(x).add(
 				WebMvcLinkBuilder
 				.linkTo(methodOn(EntregadorController.class)
 				.listarTodos())
 				.withRel("Lista de Entregadores")))
 				.collect(Collectors.toList());
 		
-		return ResponseEntity.status(HttpStatus.OK).body(lista);
+		return ResponseEntity.status(HttpStatus.OK).body(entregador);
 	}
 
 	@Transactional

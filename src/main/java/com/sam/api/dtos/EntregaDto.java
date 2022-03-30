@@ -1,12 +1,14 @@
 package com.sam.api.dtos;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import com.sam.api.entities.Entrega;
 import com.sam.api.enums.StatusEntrega;
 
 import lombok.Data;
 
 @Data
-public class EntregaDto {
+public class EntregaDto extends RepresentationModel<EntregaDto>{
 
 	private ClienteDto cliente;
 	private DestinatarioDto destinatario;
