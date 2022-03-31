@@ -43,7 +43,7 @@ public class EntregaService {
 	@Transactional
 	public ResponseEntity<Object> criarEntrega(Entrega entrega) {
 
-		String horaLimiteString = "19:00:00";
+		String horaLimiteString = "16:00:00";
 		LocalTime horaLimite = LocalTime.parse(horaLimiteString);
 		LocalTime localTime = LocalTime.now();
 
