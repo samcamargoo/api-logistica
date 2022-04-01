@@ -11,21 +11,21 @@ import lombok.Data;
 public class ApiError {
 
 	private HttpStatus status;
-	private String message;
-	private List<String> errors;
+	private String mensagem;
+	private List<String> erros;
 
-	public ApiError(HttpStatus status, String message, List<String> errors) {
+	public ApiError(HttpStatus status, String mensagem, List<String> erros) {
 		super();
 		this.status = status;
-		this.message = message;
-		this.errors = errors;
+		this.mensagem = mensagem;
+		this.erros = erros;
 	}
 
-	public ApiError(HttpStatus status, String message, String error) {
+	public ApiError(HttpStatus status, String mensagem, String erro) {
 		super();
 		this.status = status;
-		this.message = message;
-		errors = Arrays.asList(error);
+		this.mensagem = mensagem;
+		erros = Arrays.asList(erro);
 
 	}
 }
