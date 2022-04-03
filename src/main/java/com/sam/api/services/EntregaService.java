@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,18 +18,36 @@ import org.springframework.stereotype.Service;
 
 import com.sam.api.controllers.EntregaController;
 import com.sam.api.dtos.EntregaDto;
+import com.sam.api.entities.Cliente;
 import com.sam.api.entities.Entrega;
 import com.sam.api.enums.StatusEntrega;
+import com.sam.api.repositories.ClienteRepository;
 import com.sam.api.repositories.EntregaRepository;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Service
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class EntregaService {
-
+	
+	@Autowired
+	private EmailSenderService emailSenderService;
+	
+	@Autowired
 	private EntregaRepository entregaRepository;
-
+	
+	@Autowired 
+	ClienteRepository clienteRepository;
+	
+	private String entregaCriada = "Sua encomenda está a caminho e será entregue em breve";
+	private String entregaFinalizada = "Sua encomenda foi entregue com sucesso";
+	private String assunto =  "Api logistica";
+	
+	
 	public List<EntregaDto> listarTodasEntregas() {
 		List<Entrega> entregas = entregaRepository.findAll();
 		return entregas.stream()
@@ -43,16 +62,21 @@ public class EntregaService {
 	@Transactional
 	public ResponseEntity<Object> criarEntrega(Entrega entrega) {
 
-		String horaLimiteString = "16:00:00";
+		Optional<Cliente> clienteEmail = clienteRepository.findById(entrega.getCliente().getId());
+		
+		String horaLimiteString = "21:00:00";
 		LocalTime horaLimite = LocalTime.parse(horaLimiteString);
 		LocalTime localTime = LocalTime.now();
 
 		if (localTime.isAfter(horaLimite)) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body("Entregas só podem ser criadas até 16:00");
 		}
-
+		
 		entrega.setStatus(StatusEntrega.PENDENTE);
 		entrega.setHoraCriada(LocalDateTime.now());
+		
+		emailSenderService.enviarEmail(clienteEmail.get().getEmail(), entregaCriada, assunto);
+		
 		return ResponseEntity.status(HttpStatus.CREATED).body(entregaRepository.save(entrega));
 
 	}
@@ -117,7 +141,8 @@ public class EntregaService {
 	public ResponseEntity<Object> finalizar(Long id) {
 
 		Optional<Entrega> entregaOptional = entregaRepository.findById(id);
-
+		Optional<Cliente> clienteEmail = clienteRepository.findById(entregaOptional.get().getCliente().getId());
+		
 		if (entregaOptional.get().naoPodeSerFinalizada()) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body("Entrega não pode ser finalizada");
 		}
@@ -129,8 +154,15 @@ public class EntregaService {
 		entrega.setHoraCriada(entregaOptional.get().getHoraCriada());
 		entrega.setStatus(StatusEntrega.FINALIZADA);
 		entrega.setHoraFinalizada(LocalDateTime.now());
+		
+		emailSenderService.enviarEmail(clienteEmail.get().getEmail(), entregaFinalizada + " pelo entregador " 
+										+ entrega.getEntregador().getNome() 
+										+ " às " 
+										+ LocalTime.now(), assunto);
 		entregaRepository.save(entrega);
 		return ResponseEntity.status(HttpStatus.OK).body("Entrega finalizada com sucesso");
 	}
+	
+
 
 }
